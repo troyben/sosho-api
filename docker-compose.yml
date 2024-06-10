@@ -1,0 +1,19 @@
+version: '3.8'
+services:
+  users:
+    build:
+      context: ./service-users
+      dockerfile: Dockerfile
+    ports:
+      - "5001:5001"
+    environment:
+      - NODE_ENV=production
+
+  nginx:
+    build:
+      context: ./nginx
+      dockerfile: Dockerfile
+    ports:
+      - "85:85"
+    depends_on:
+      - users

@@ -1,0 +1,15 @@
+{
+  "semi": true,
+  "trailingComma": "es5",
+  "singleQuote": true,
+  "printWidth": 72,
+  "tabWidth": 2,
+  "indent": [true, "spaces", 2],
+  "variable-name": [
+    true,
+    "allow-leading-underscore",
+    "allow-snake-case",
+    "require-const-for-all-caps",
+    "allow-pascal-case"
+  ]
+}

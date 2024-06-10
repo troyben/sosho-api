@@ -1,4 +1,4 @@
-const base: string = '/api';
+const base: string = '/service-users';
 
 export default {
   url: {
