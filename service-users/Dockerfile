@@ -1,8 +1,9 @@
-FROM node:21.7.1-alpine
+FROM node:21.7.1
 
 WORKDIR /usr/src/app
 
 COPY package*.json ./
+COPY .env.development ./
 
 RUN yarn install
 

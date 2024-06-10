@@ -1,5 +1,7 @@
-import * as express from 'express';
-import * as proxy from "express-http-proxy";
+// @ts-ignore
+import express from 'express';
+// @ts-ignore
+import proxy from "express-http-proxy";
 
 const app = express();
 app.use(express.json());

@@ -23,7 +23,7 @@
     "boilerplate",
     "tslint"
   ],
-  "author": "a7urag",
+  "author": "btsuro",
   "license": "ISC",
   "devDependencies": {
     "@babel/core": "^7.3.4",
