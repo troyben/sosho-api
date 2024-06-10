@@ -8,6 +8,7 @@ const connectionOptions: DataSourceOptions = {
   username: process.env.DB_USER,
   password: process.env.DB_PASSWORD,
   database: process.env.DB_NAME,
+  port: parseInt(process.env.DB_PORT),
   charset: 'utf8',
   synchronize: false,
   logging: process.env.NODE_ENV !== 'production',

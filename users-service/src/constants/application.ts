@@ -14,4 +14,9 @@ export default {
     `${base}/user/auth/login`,
     `${base}/user/auth/register`,
   ],
+  users: {
+    roles: {
+      deny: 'Unverified'
+    }
+  }
 };

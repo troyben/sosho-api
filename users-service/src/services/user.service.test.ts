@@ -40,29 +40,27 @@ describe('User service', () => {
   });
 
   test('createUser', async () => {
-    const user = {
+    const user: Users = {
       id: 1,
-      password: '123',
-      name: 'Test user',
+      password: '12345678',
+      first_name: 'Test',
       email: 'test@test.com',
+      created_at: new Date(),
+      updated_at: new Date(),
     };
     mockRepository(user);
-    const actual = await UserService.createUser(
-      user.email,
-      user.password,
-      user.name,
-    );
+    const actual = await UserService.createUser(user);
     expect(actual.id).toBe(1);
     // @ts-ignore
     expect(actual.password).toBe(undefined);
-    expect(actual.first_name).toBe(user.name);
+    expect(actual.first_name).toBe(user.first_name);
     // expect(actual.email).toBe(user.email);
     expect(typeorm.getRepository(Users).save).toHaveBeenCalledTimes(1);
     expect(typeorm.getRepository(Users).save).toHaveBeenCalledWith(
       expect.objectContaining({
         email: user.email,
         password: expect.any(String),
-        name: user.name,
+        name: user.first_name,
       }),
     );
   });

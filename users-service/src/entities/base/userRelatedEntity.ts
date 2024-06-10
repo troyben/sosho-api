@@ -7,6 +7,6 @@ export class UserRelatedEntity {
   userId: number;
 
   @ManyToOne(type => Users)
-  @JoinColumn({ name: 'userId' })
+  @JoinColumn({ name: 'user_id' })
   user: Users;
 }

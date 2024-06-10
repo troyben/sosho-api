@@ -1,6 +1,6 @@
 // @ts-ignore
 import * as typeorm from 'typeorm';
-import { myDataSource } from '../../app-data-source';
+import { db } from '../../app-data-source';
 
 export const mockQueryBuilder = (returnValue: any) => {
   // @ts-ignore
@@ -13,7 +13,7 @@ export const mockQueryBuilder = (returnValue: any) => {
     getOne: jest.fn().mockResolvedValue(returnValue),
   });
 
-  return myDataSource.createQueryBuilder;
+  return db.createQueryBuilder;
 };
 
 export const mockRepository = (returnValue: any) => {
@@ -23,5 +23,5 @@ export const mockRepository = (returnValue: any) => {
     save: jest.fn().mockReturnValue(returnValue),
   });
 
-  return myDataSource.getRepository;
+  return db.getRepository;
 };

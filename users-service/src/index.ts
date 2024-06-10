@@ -1,11 +1,11 @@
 import 'reflect-metadata';
 import app from './config/express';
 import logger from './config/logger';
-import { myDataSource } from './app-data-source';
-const PORT = process.env.PORT || 5001;
+import { db } from './app-data-source';
+const PORT = process.env.SERVER_PORT;
 
 const main = async () => {
-  myDataSource.initialize().then(() => {
+  db.initialize().then(() => {
     logger.info('database connection created');
     app.listen(PORT, () => {
       logger.info(`Server running at ${PORT}`);

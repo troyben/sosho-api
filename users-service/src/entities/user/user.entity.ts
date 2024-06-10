@@ -8,42 +8,42 @@ export class Users extends DateTimeEntity {
 
   @Column()
   @Unique(['email'])
-  email: string;
+  email?: string;
 
   @Column()
-  first_name: string;
+  first_name?: string;
 
-  @Column()
-  last_name: string;
+  @Column({default: null})
+  last_name?: string;
 
   @Column()
   password?: string;
 
   @Column()
-  natid: string;
+  natid?: string;
 
   @Column()
   @Unique(['mobile'])
-  mobile: string;
+  mobile?: string;
 
   @Column()
-  physical_address: string;
+  physical_address?: string;
+
+  @Column({default: 'User'})
+  role?: string;
 
   @Column()
-  role: string;
-
-  @Column()
-  password_changed: boolean;
+  password_changed?: boolean;
 
   @Column({ type: 'timestamp', default: null })
-  pwd_last_changed: string;
+  pwd_last_changed?: string;
 
   @Column({ default: true })
-  activated: boolean;
+  activated?: boolean;
 
   @Column({ type: 'timestamp' })
-  deleted_at: string;
+  deleted_at?: string;
 
   @Column({ type: 'timestamp' })
-  email_verified_at: string;
+  email_verified_at?: string;
 }
