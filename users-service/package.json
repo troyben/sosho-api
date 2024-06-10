@@ -8,8 +8,8 @@
     "prebuild": "rimraf dist/",
     "build": "tsc",
     "start": "yarn serve",
-    "serve": "node dist/index.js",
-    "watch-node": "nodemon",
+    "serve": "NODE_ENV=production node dist/index.js",
+    "watch-node": "NODE_ENV=development nodemon",
     "watch-ts": "tsc -w",
     "migration:generate": "ts-node ./node_modules/.bin/typeorm migration:generate",
     "migration:run": "ts-node ./node_modules/.bin/typeorm migration:run"
