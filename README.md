@@ -1,0 +1,2 @@
+# sosho-api
+Soshopay APIs
