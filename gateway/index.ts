@@ -15,8 +15,8 @@ const HOST = process.env.SERVER_HOST;
 
 const auth = proxy(`http://${HOST}:8081`);
 
-app.get("/heartbeat", (req: express.Request, res: express.Response) => {
-    res.status(200).send("I'M ALIVE!");
+app.get("/", (req: express.Request, res: express.Response) => {
+    res.status(200).send("I'M ALIVE! API DOCS COMING SOON!");
 })
 
 app.use("/api/v1", auth);
