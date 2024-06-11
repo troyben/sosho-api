@@ -10,7 +10,9 @@ import * as errorHandler from '../middlewares/apiErrorHandler';
 
 const app = express();
 
-require('dotenv').config();
+import * as dotenv from 'dotenv'
+dotenv.config({ path: `.env.${process.env.NODE_ENV}` });
+
 app.use(bodyParser.json());
 
 app.use(morgan('dev'));
