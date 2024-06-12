@@ -32,8 +32,9 @@ const verifyHash = async (
     });
   });
 
-const generateCookie = async (payload: { [key: string]: string }) => {
-  const data: { [key: string]: string } = payload;
+const generateCookie = async (key: string, value: string) => {
+  const data: { [key: string]: string } = {};
+  data[key] = value;
   return await jwt.sign({ data }, application.env.authSecret, {
     algorithm: 'HS256',
     expiresIn: application.timers.userCookieExpiry,
@@ -42,11 +43,7 @@ const generateCookie = async (payload: { [key: string]: string }) => {
 
 const verifyCookie = async (token: string): Promise<any> =>
   new Promise((resolve) => {
-    jwt.verify(
-      token,
-      application.env.authSecret,
-      {algorithm: 'HS256'},
-      (err: Error, decoded: any) => {
+    jwt.verify(token, application.env.authSecret,{algorithm: 'HS256'}, (err: Error, decoded: any) => {
         if (err) {
           resolve(null);
         } else {

@@ -31,14 +31,20 @@ export default async (
     const authorizationHeader = extractCookieFromRequest(req, Constants.Cookie.COOKIE_USER);
 
     console.log('\n=======\n', authorizationHeader, '\n=======\n')
+
     if (authorizationHeader) {
+
       const decoded = await verifyCookie(authorizationHeader);
+
       if (decoded) {
-        const user = await userService.getUserById(parseInt(decoded.data[Constants.Cookie.KEY_USER_ID], 10),);
+        const user = await userService.getUserById(
+          parseInt(decoded.data[Constants.Cookie.KEY_USER_ID], 10),
+        );
 
         if (user) {
           req.user = user;
-          req.dashboard = req.headers['context'] === 'dashboard' && user.activated;
+          req.dashboard =
+            req.headers['context'] === 'dashboard' && user.activated;
         } else {
           apiResponse.error(res, httpStatusCodes.UNAUTHORIZED);
           return;

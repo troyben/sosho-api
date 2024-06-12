@@ -1,12 +1,14 @@
 
 import { Users } from '../entities/user/user.entity';
-import { sanitizeUser } from '../utilities/apiUtilities';
+import { extractCookieFromRequest, sanitizeUser } from '../utilities/apiUtilities';
 import { generateHash, verifyHash } from '../utilities/encryptionUtils';
 import { getRole, attachRole } from '../utilities/rolesAndPermissionsUtils';
 import { db } from '../app-data-source';
 import { Roles } from '../entities/roles/roles.entity';
 import { RoleUser } from '../entities/roleUser/roleUser.entity';
 import appConstants from '../constants/application';
+import Constants from '../constants';
+import IRequest from 'IRequest';
 
 const getUserById = async (userId: number) => {
   try {

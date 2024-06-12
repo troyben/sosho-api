@@ -16,7 +16,7 @@ const login: IController = async (req, res) => {
       req.body.email,
       req.body.password,
     );
-    const cookie = await generateUserCookie(user.id);
+    const cookie = await generateUserCookie(user.id, user.role);
     apiResponse.result(res, user, httpStatusCodes.OK, cookie);
   } catch (e) {
     apiResponse.error(
@@ -55,7 +55,7 @@ const register: IController = async (req, res) => {
       return;
   }
   if (user) {
-    const cookie = await generateUserCookie(user.id);
+    const cookie = await generateUserCookie(user.id, user.role);
     apiResponse.result(res, user, httpStatusCodes.CREATED, cookie);
   } else {
     apiResponse.error(res, httpStatusCodes.BAD_REQUEST);
@@ -139,17 +139,18 @@ const deny: IController = async (req, res) => {
 }
 
 const self: IController = async (req, res) => {
-  const cookie = await generateUserCookie(req.user.id);
+  const cookie = await generateUserCookie(req.user.id, req.user.role);
   apiResponse.result(res, req.user, httpStatusCodes.OK, cookie);
 };
 
-const generateUserCookie = async (userId: number) => {
+const generateUserCookie = async (userId: number, role: string) => {
+  const payload = {
+    [constants.Cookie.KEY_USER_ID]: userId.toString(),
+    [constants.Cookie.KEY_USER_ROLE]: role.toString()
+  }
   return {
     key: constants.Cookie.COOKIE_USER,
-    value: await generateCookie(
-      constants.Cookie.KEY_USER_ID,
-      userId.toString(),
-    ),
+    value: await generateCookie(payload),
   };
 };
 

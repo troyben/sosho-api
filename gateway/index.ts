@@ -14,12 +14,14 @@ const PORT = process.env.SERVER_PORT;
 const HOST = process.env.SERVER_HOST;
 
 const auth = proxy(`http://${HOST}:8081`);
+const loans = proxy(`http://${HOST}:8082`);
 
 app.get("/", (req: express.Request, res: express.Response) => {
     res.status(200).send("I'M ALIVE! API DOCS COMING SOON!");
 })
 
-app.use("/api/v1", auth);
+app.use("/api/v1/service-auth", auth);
+app.use("/api/v1/service-loans", loans);
 
 const server = app.listen(PORT, () => {
     console.log(`Gateway is Listening to Port ${PORT}`);
