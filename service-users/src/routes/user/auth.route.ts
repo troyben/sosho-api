@@ -42,6 +42,10 @@ router.post(
   userController.deny
 )
 
-router.get('/me', userController.self);
+router.post(
+  '/me',
+  celebrate(userSchema.me),
+  userController.self
+);
 
 export default router;

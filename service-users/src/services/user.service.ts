@@ -14,7 +14,7 @@ const getUserById = async (userId: number) => {
         await db.getRepository(Users).findOne({ where: { id: userId } }),
     );
   } catch (e) {
-    return null;
+    throw e;
   }
 };
 
@@ -25,18 +25,22 @@ const getUserByEmail = async (
   try {
     return await db.getRepository(Users).findOne({ where: { email } });
   } catch (e) {
-    return null;
+    throw e;
   }
 };
 
 const getRoleUserByUserId = async (
   id: number,
 ) => {
+  try {
     const roleUser = await db.getRepository(RoleUser).findOne({ where: { user_id: id } });
     if (roleUser) {
       return roleUser;
     }
-    throw { message: "User role does not exist!" };
+    throw {message: "User role does not exist!"};
+  } catch (e) {
+    throw e
+  }
 };
 
 const createUser = async (payload: Users) => {
@@ -96,7 +100,7 @@ const verify = async (email: string, verifyAs: string) => {
   const verifyAsRole: Roles = await getRole(verifyAs)
   if (!verifyAsRole) throw { message: "Role does not exist!" };
 
-  const roleUser: RoleUser = await getRoleUserByUserId(user.id)
+  const roleUser: RoleUser = await getRoleUserByUserId(user.id) || null
   if (!roleUser) throw { message: "Role-User record is not in the database!" };
 
   user.role = verifyAsRole.name;

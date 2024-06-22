@@ -21,7 +21,6 @@ const getDisbursed: IController = async (req, res) => {
 
 const getAll: IController = async (req, res) => {
   try {
-
     const loans: Loans[] = await loanService.getAllLoans();
     apiResponse.result(res, loans, httpStatusCodes.OK);
   } catch (e) {

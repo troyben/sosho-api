@@ -19,7 +19,7 @@ const extractQueryForRequest = (req: Request, query: string) => {
 
 const extractCookieFromRequest = (req: Request, key: string) => {
   if (req.headers.authorization) {
-    return req.headers.authorization;
+    return req.headers.authorization.split(' ')[1];
   }
   if (req.headers.cookie) {
     const results = req.headers.cookie.split(';');

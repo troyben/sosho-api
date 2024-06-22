@@ -1,4 +1,4 @@
-import { Column, CreateDateColumn, UpdateDateColumn } from 'typeorm';
+import { CreateDateColumn, UpdateDateColumn } from 'typeorm';
 
 export class DateTimeEntity {
   @CreateDateColumn({ type: 'timestamp', nullable: false, default: 'NOW()'})
@@ -6,7 +6,4 @@ export class DateTimeEntity {
 
   @UpdateDateColumn({ type: 'timestamp', nullable: false, default: 'NOW()' })
   updated_at: Date;
-
-  @Column({ type: 'timestamp' })
-  deleted_at?: string;
 }

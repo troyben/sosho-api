@@ -8,32 +8,26 @@ export interface IOverrideRequest {
 }
 
 export interface ICookie {
-  key: string;
-  value: string;
+  token: {key: string; value: string };
+  refreshToken: {key: string; value: string }
 }
+
 export default class ApiResponse {
-  static result = (
-    res: Response,
-    data: object,
-    status: number = 200,
-    cookie: ICookie = null,
-  ) => {
+  static result = (res: Response, data: object, status: number = 200, cookie: ICookie = null) => {
     res.status(status);
+
     if (cookie) {
-      res.cookie(cookie.key, cookie.value);
+      res.cookie(cookie.token.key, cookie.token.value);
+      res.cookie(cookie.refreshToken.key, cookie.refreshToken.value);
     }
+
     res.json({
       data,
       success: true,
     });
   }
 
-  static error = (
-    res: Response,
-    status: number = 400,
-    error: string = httpStatusCodes.getStatusText(status),
-    override: IOverrideRequest = null,
-  ) => {
+  static error = (res: Response, status: number = 400, error: string = httpStatusCodes.getStatusText(status), override: IOverrideRequest = null) => {
     res.status(status).json({
       override,
       error: {

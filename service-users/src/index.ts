@@ -6,12 +6,15 @@ const PORT = process.env.SERVER_PORT;
 
 const main = async () => {
   db.initialize().then(() => {
-    logger.info('database connection created');
+    console.log('Database connection create');
+    logger.info('Database connection created');
     app.listen(PORT, () => {
-      logger.info(`Server running at ${PORT}`);
+      console.log(`Users Service Running on PORT ${PORT}`);
+      logger.info(`Users Service running at ${PORT}`);
     });
   }).catch((err) => {
     console.error('Error during Data Source initialization:', err);
+    logger.info(`Error during Data Source initialization: ${err}`);
   });
 };
 

@@ -4,7 +4,6 @@ import * as bodyParser from 'body-parser';
 
 import indexRoute from '../routes/index.route';
 import application from '../constants/application';
-import authenticate from '../middlewares/authenticate';
 import joiErrorHandler from '../middlewares/joiErrorHandler';
 import * as errorHandler from '../middlewares/apiErrorHandler';
 
@@ -16,8 +15,6 @@ dotenv.config({ path: `.env.${process.env.NODE_ENV}` });
 app.use(bodyParser.json());
 
 app.use(morgan('dev'));
-
-app.use(authenticate);
 
 // Router
 app.use(application.url.base, indexRoute);

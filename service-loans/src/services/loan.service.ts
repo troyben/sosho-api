@@ -5,7 +5,7 @@ const getAllLoans = async () => {
   try {
     return await db.getRepository(Loans).find();
   } catch (e) {
-    return null;
+    throw e;
   }
 }
 
@@ -13,7 +13,7 @@ const getDisbursed = async () => {
   try {
     return await db.getRepository(Loans).find({ where: { isDisbursed: true } });
   } catch (e) {
-    return null;
+    throw e;
   }
 }
 

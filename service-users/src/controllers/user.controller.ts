@@ -1,14 +1,19 @@
 import httpStatusCodes from 'http-status-codes';
 
-import constants from '../constants';
 import locale from '../constants/locale';
 import IController from '../types/IController';
 import apiResponse from '../utilities/apiResponse';
 import userService from '../services/user.service';
-import { generateCookie } from '../utilities/encryptionUtils';
 import { Users } from '../entities/user/user.entity';
 import { extractCookieFromRequest } from '../utilities/apiUtilities';
 import Constants from '../constants';
+import axios from 'axios';
+import * as process from 'node:process';
+
+const gatekeeperUrl = process.env.GATEKEEPER_URL
+const gatekeeperPort = process.env.GATEKEEPER_PORT
+
+
 
 const login: IController = async (req, res) => {
   try {
@@ -16,9 +21,41 @@ const login: IController = async (req, res) => {
       req.body.email,
       req.body.password,
     );
-    const cookie = await generateUserCookie(user.id, user.role);
-    apiResponse.result(res, user, httpStatusCodes.OK, cookie);
+    if (user) {
+      const isAuthorizedResponse: any = await axios.post(`${gatekeeperUrl}:${gatekeeperPort}/jwt-sign`, user)
+        .then((response: any) =>response.data);
+
+      console.log('isAuthorizedResponse', isAuthorizedResponse);
+
+
+      if (
+        isAuthorizedResponse.token.key === 'token' && isAuthorizedResponse.token.value.length > 0 &&
+        isAuthorizedResponse.refreshToken.key === 'refreshToken' && isAuthorizedResponse.refreshToken.value.length > 0
+      ) {
+        const response = {
+          token: isAuthorizedResponse.token.value,
+          refreshToken: isAuthorizedResponse.refreshToken.value,
+          data: { user }
+        }
+        apiResponse.result(res, response, httpStatusCodes.OK, isAuthorizedResponse);
+        return;
+      }
+      apiResponse.error(
+        res,
+        httpStatusCodes.BAD_REQUEST,
+        locale.INVALID_CREDENTIALS,
+      );
+      return;
+    }
+    apiResponse.error(
+      res,
+      httpStatusCodes.BAD_REQUEST,
+      locale.INVALID_CREDENTIALS,
+    );
+    return;
   } catch (e) {
+    console.log('ERROR ==> ', e.message);
+
     apiResponse.error(
       res,
       httpStatusCodes.BAD_REQUEST,
@@ -31,13 +68,16 @@ const login: IController = async (req, res) => {
 const logout: IController = async (req, res) => {
   const authorizationHeader = extractCookieFromRequest(
     req,
-    Constants.Cookie.COOKIE_USER,
+    Constants.Cookie.USER_TOKEN,
   );
   if (authorizationHeader) {
-    res.clearCookie('jwt');
-    res.clearCookie('user');
-    apiResponse.result(res, {}, httpStatusCodes.OK, null);
+    res.clearCookie('token');
+    res.clearCookie('refreshToken');
+    res.json({ message: "Logged out successfully",success: true});
+    return;
   }
+  apiResponse.error(res, httpStatusCodes.BAD_REQUEST, "No User currently logged in the system");
+  return;
 }
 
 const register: IController = async (req, res) => {
@@ -46,6 +86,29 @@ const register: IController = async (req, res) => {
 
   try {
     user = await userService.createUser(payload);
+
+    const isAuthorizedResponse: any = await axios.post(`${gatekeeperUrl}:${gatekeeperPort}/jwt-sign`, user)
+      .then((response: any) =>response.data);
+
+    if (
+      isAuthorizedResponse.token.key === 'token' && isAuthorizedResponse.token.value.length > 0 &&
+      isAuthorizedResponse.refreshToken.key === 'refreshToken' && isAuthorizedResponse.refreshToken.value.length > 0
+    ) {
+      const response = {
+        token: isAuthorizedResponse.token.value,
+        refreshToken: isAuthorizedResponse.refreshToken.value,
+        data: { user }
+      }
+      apiResponse.result(res, response, httpStatusCodes.OK, isAuthorizedResponse);
+      return;
+    }
+    apiResponse.error(
+      res,
+      httpStatusCodes.BAD_REQUEST,
+      locale.INVALID_CREDENTIALS,
+    );
+    return;
+
   } catch (e) {
       apiResponse.error(
         res,
@@ -54,12 +117,7 @@ const register: IController = async (req, res) => {
       );
       return;
   }
-  if (user) {
-    const cookie = await generateUserCookie(user.id, user.role);
-    apiResponse.result(res, user, httpStatusCodes.CREATED, cookie);
-  } else {
-    apiResponse.error(res, httpStatusCodes.BAD_REQUEST);
-  }
+
 };
 
 const activate: IController = async (req, res) => {
@@ -67,7 +125,7 @@ const activate: IController = async (req, res) => {
   try {
     user = await userService.activateUser(req.body.email)
     if (user) {
-      apiResponse.result(res, user, httpStatusCodes.CREATED);
+      apiResponse.result(res, user, httpStatusCodes.OK);
     } else {
       apiResponse.error(res, httpStatusCodes.BAD_REQUEST);
     }
@@ -86,7 +144,7 @@ const deactivate: IController = async (req, res) => {
   try {
     user = await userService.deactivateUser(req.body.email)
     if (user) {
-      apiResponse.result(res, user, httpStatusCodes.CREATED);
+      apiResponse.result(res, user, httpStatusCodes.OK);
     } else {
       apiResponse.error(res, httpStatusCodes.BAD_REQUEST);
     }
@@ -100,23 +158,23 @@ const deactivate: IController = async (req, res) => {
   }
 }
 
-  const verify: IController = async (req, res) => {
-    let user;
-    try {
-      user = await userService.verify(req.body.email, req.body.verifyAs)
-      if (user) {
-        apiResponse.result(res, user, httpStatusCodes.CREATED);
-      } else {
-        apiResponse.error(res, httpStatusCodes.BAD_REQUEST);
-      }
-    } catch (e) {
-      apiResponse.error(
-        res,
-        httpStatusCodes.BAD_REQUEST,
-        e.sqlMessage || e.message,
-      );
-      return;
+const verify: IController = async (req, res) => {
+  let user;
+  try {
+    user = await userService.verify(req.body.email, req.body.verifyAs)
+    if (user) {
+      apiResponse.result(res, user, httpStatusCodes.OK);
+    } else {
+      apiResponse.error(res, httpStatusCodes.BAD_REQUEST);
     }
+  } catch (e) {
+    apiResponse.error(
+      res,
+      httpStatusCodes.BAD_REQUEST,
+      e.sqlMessage || e.message,
+    );
+    return;
+  }
 }
 
 const deny: IController = async (req, res) => {
@@ -139,20 +197,30 @@ const deny: IController = async (req, res) => {
 }
 
 const self: IController = async (req, res) => {
-  const cookie = await generateUserCookie(req.user.id, req.user.role);
-  apiResponse.result(res, req.user, httpStatusCodes.OK, cookie);
+  try {
+    const token = extractCookieFromRequest(req, Constants.Cookie.USER_TOKEN);
+
+    const isAuthorizedResponse: any = await axios.post(`${gatekeeperUrl}:${gatekeeperPort}/jwt-verify`, { token })
+      .then((response: any) =>response.data);
+
+    const user = await userService.getUserById(parseInt(isAuthorizedResponse.decode.data.userId, 10))
+
+    if (user) {
+      apiResponse.result(res, user, httpStatusCodes.OK);
+      return
+    }
+    apiResponse.error(res, httpStatusCodes.UNAUTHORIZED);
+    return;
+  } catch (e) {
+    apiResponse.error(
+      res,
+      httpStatusCodes.BAD_REQUEST,
+      e.sqlMessage || e.message,
+    );
+    return;
+  }
 };
 
-const generateUserCookie = async (userId: number, role: string) => {
-  const payload = {
-    [constants.Cookie.KEY_USER_ID]: userId.toString(),
-    [constants.Cookie.KEY_USER_ROLE]: role.toString()
-  }
-  return {
-    key: constants.Cookie.COOKIE_USER,
-    value: await generateCookie(payload),
-  };
-};
 
 export default {
   login,

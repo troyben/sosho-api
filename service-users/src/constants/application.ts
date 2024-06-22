@@ -1,8 +1,10 @@
 const base: string = '/';
+const gateway: string = process.env.GATEWAY || '';
 
 export default {
   url: {
     base,
+    gateway
   },
   timers: {
     userCookieExpiry: '24h',
@@ -11,6 +13,8 @@ export default {
     authSecret: process.env.JWT_SECRET || 'test',
   },
   authorizationIgnorePath: [
+    `${base}jwt-sign`,
+    `${base}jwt-authorization`,
     `${base}user/auth/login`,
     `${base}user/auth/register`,
   ],
