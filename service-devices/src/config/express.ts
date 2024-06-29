@@ -17,7 +17,7 @@ app.use(bodyParser.json());
 app.use(morgan('dev'));
 
 // Router
-app.use('/', indexRoute);
+app.use(application.url.base, indexRoute);
 
 // Joi Error Handler
 app.use(joiErrorHandler);

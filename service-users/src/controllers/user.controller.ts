@@ -14,7 +14,6 @@ const gatekeeperUrl = process.env.GATEKEEPER_URL
 const gatekeeperPort = process.env.GATEKEEPER_PORT
 
 
-
 const login: IController = async (req, res) => {
   try {
     const user = await userService.loginUser(
@@ -25,9 +24,6 @@ const login: IController = async (req, res) => {
       const isAuthorizedResponse: any = await axios.post(`${gatekeeperUrl}:${gatekeeperPort}/jwt-sign`, user)
         .then((response: any) =>response.data);
 
-      console.log('isAuthorizedResponse', isAuthorizedResponse);
-
-
       if (
         isAuthorizedResponse.token.key === 'token' && isAuthorizedResponse.token.value.length > 0 &&
         isAuthorizedResponse.refreshToken.key === 'refreshToken' && isAuthorizedResponse.refreshToken.value.length > 0
@@ -37,6 +33,7 @@ const login: IController = async (req, res) => {
           refreshToken: isAuthorizedResponse.refreshToken.value,
           data: { user }
         }
+        req.user = user;
         apiResponse.result(res, response, httpStatusCodes.OK, isAuthorizedResponse);
         return;
       }
@@ -198,7 +195,7 @@ const deny: IController = async (req, res) => {
 
 const self: IController = async (req, res) => {
   try {
-    const token = extractCookieFromRequest(req, Constants.Cookie.USER_TOKEN);
+    const token = req.body.token || extractCookieFromRequest(req, Constants.Cookie.USER_TOKEN);
 
     const isAuthorizedResponse: any = await axios.post(`${gatekeeperUrl}:${gatekeeperPort}/jwt-verify`, { token })
       .then((response: any) =>response.data);
@@ -212,6 +209,7 @@ const self: IController = async (req, res) => {
     apiResponse.error(res, httpStatusCodes.UNAUTHORIZED);
     return;
   } catch (e) {
+    console.log('\n====IN USERS==\n', res);
     apiResponse.error(
       res,
       httpStatusCodes.BAD_REQUEST,

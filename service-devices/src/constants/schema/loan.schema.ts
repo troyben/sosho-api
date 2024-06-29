@@ -26,11 +26,6 @@ export default {
   update: {
     body: {},
   },
-  me: {
-    [Segments.BODY]: {
-      token: Joi.string(),
-    },
-  },
   activate: {
     [Segments.BODY]: {
       email: Joi.string().email().required(),

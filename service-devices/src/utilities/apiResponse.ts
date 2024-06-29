@@ -12,13 +12,12 @@ export interface ICookie {
   value: string;
 }
 export default class ApiResponse {
-  static result = (res: Response, data: object[], status: number = 200, cookie: ICookie = null) => {
+  static result = (res: Response, data: object, status: number = 200, cookie: ICookie = null) => {
     res.status(status);
     if (cookie) {
       res.cookie(cookie.key, cookie.value);
     }
     res.json({
-      total: data.length,
       data,
       success: true,
     });

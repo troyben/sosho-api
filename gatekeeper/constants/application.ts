@@ -5,7 +5,7 @@ export default {
     base_v1,
   },
   timers: {
-    userCookieExpiry: '5m',
+    userCookieExpiry: '24h',
     userRefreshCookieExpiry: '24h',
   },
   env: {

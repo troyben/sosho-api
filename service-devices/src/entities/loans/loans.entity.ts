@@ -30,7 +30,7 @@ export class Loans extends DateTimeEntity {
   @Column({ type: 'numeric', precision: 10, scale: 2 })
   interest_rate?: number;
 
-  @Column({ type: 'numeric', precision: 10, scale: 2, default: 0 })
+  @Column({ type: 'numeric', precision: 10, scale: 2 })
   monthly?: number;
 
   @Column({ type: 'numeric', precision: 10, scale: 2 })

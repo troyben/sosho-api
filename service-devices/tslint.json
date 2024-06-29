@@ -1,0 +1,17 @@
+{
+  "extends": "tslint-config-airbnb",
+  "rules": {
+    "import-name": false,
+    "semicolon": [true],
+    "indent": [false, "tabs"],
+    "singleQuote": true,
+    "doubleQuote": true,
+    "variable-name": [
+      true,
+      "allow-leading-underscore",
+      "allow-snake-case",
+      "require-const-for-all-caps",
+      "allow-pascal-case"
+    ]
+  }
+}
