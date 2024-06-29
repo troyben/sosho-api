@@ -1,6 +1,6 @@
 FROM node:21.7.1 AS build
 
-WORKDIR /microservice/gateway
+WORKDIR /microservice/gatekeeper
 
 COPY package*.json .
 COPY yarn.lock .
@@ -16,7 +16,7 @@ RUN yarn run build
 #Production stage
 FROM node:21.7.1 AS production
 
-WORKDIR /microservice/gateway
+WORKDIR /microservice/gatekeeper
 
 COPY package*.json .
 COPY yarn.lock .
@@ -25,8 +25,8 @@ COPY .env.production .
 
 RUN yarn --frozen-lockfile --production
 
-COPY --from=build /microservice/gateway/dist ./dist
+COPY --from=build /microservice/gatekeeper/dist ./dist
 
-EXPOSE 8080
+EXPOSE 5001
 
 CMD ["yarn", "start"]

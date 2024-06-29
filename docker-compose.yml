@@ -1,27 +1,26 @@
 version: '3.8'
 services:
-  gateway:
+  gatekeeper:
     build:
-      context: ./gateway
+      context: ./gatekeeper
       dockerfile: Dockerfile
     ports:
-      - "8080:8080"
+      - "5001:5001"
 
   users:
     build:
       context: ./service-users
       dockerfile: Dockerfile
     ports:
-      - "8081:8081"
+      - "5002:5002"
     depends_on:
-      - gateway
+      - gatekeeper
 
-  nginx:
+  loans:
     build:
-      context: ./nginx
+      context: ./service-loans
       dockerfile: Dockerfile
     ports:
-      - "85:85"
+      - "5003:5003"
     depends_on:
-      - users
-      - gateway
+      - gatekeeper

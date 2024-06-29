@@ -1,8 +1,8 @@
 export default {
   gatekeeper : {
     name: 'Gatekeeper',
-    url: process.env.GATEWAY_URL,
-    port: process.env.GATEWAY_PORT
+    url: process.env.GATEKEEPER_URL,
+    port: process.env.GATEKEEPER_PORT
   },
   users : {
     name: 'Users',

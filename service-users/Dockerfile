@@ -28,6 +28,6 @@ RUN yarn --frozen-lockfile --production
 
 COPY --from=build /microservice/users/dist ./dist
 
-EXPOSE 8081
+EXPOSE 5002
 
 CMD ["yarn", "start"]

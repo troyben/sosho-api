@@ -4,5 +4,3 @@ node_modules/
 migration/
 dist/
 coverage/*
-.env.development
-.env.production
